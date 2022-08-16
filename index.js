@@ -1,16 +1,14 @@
-import puppeteer from "puppeteer";
+import bot from "./utils/bot.js";
 
-(async () => {
-  const browser = await puppeteer.launch({
-    defaultViewport: {
-      width: 1920,
-      height: 1080,
-    },
-    args: ["--no-sandbox", "--headless"],
+const url = "https://www.aashishpanthi.info.np";
+
+bot(url)
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((err) => {
+    console.log(err);
+  })
+  .finally(() => {
+    console.log("done");
   });
-  const page = await browser.newPage();
-  await page.goto("https://example.com");
-  await page.screenshot({ path: "test.png" });
-
-  await browser.close();
-})();
