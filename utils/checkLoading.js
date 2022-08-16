@@ -9,8 +9,7 @@ const checkLoading = async (page, browser) => {
 
   console.log(loadingTime);
 
-  await browser.close();
-  return;
+  return loadingTime;
 };
 
 export default checkLoading;

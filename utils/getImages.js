@@ -9,7 +9,6 @@ async function getImages(page, browser) {
       };
     });
   });
-  await browser.close();
   return images;
 }
 

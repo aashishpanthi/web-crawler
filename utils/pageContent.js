@@ -11,59 +11,48 @@ const scrape = async (page, browser) => {
     (el) => el.content
   );
 
+  // get the keywords of the page
+  const keywords = await page.$eval("meta[name=keywords]", (el) => el.content);
+
   // get the headings of the page
   const headings = await page.$$eval("h1, h2, h3, h4", (els) =>
     els.map((el) => el.textContent)
   );
 
-  //get the favicon of the website
-  const favicon = await page.evaluate(() => {
-    const favicon = document.querySelector("link[rel*='icon']");
-    return favicon.href;
-  });
+  //check and get either the favicon or shortcut icon of the website
+  const favicon = await page.$eval("link[rel=icon]", (el) => el.href);
+  const shortcutIcon = await page.$eval(
+    "link[rel=shortcut icon]",
+    (el) => el.href
+  );
+  const faviconOrShortcutIcon = favicon || shortcutIcon;
 
-  //get the og photo of the website
-  const ogPhoto = await page.evaluate(() => {
+  //get the og details of the website
+  const ogDetails = await page.evaluate(() => {
     const ogPhoto = document.querySelector("meta[property*='og:image']");
-    return ogPhoto.content;
-  });
-
-  //get the og title of the website
-  const ogTitle = await page.evaluate(() => {
     const ogTitle = document.querySelector("meta[property*='og:title']");
-    return ogTitle.content;
-  });
-
-  //get the og description of the website
-  const ogDescription = await page.evaluate(() => {
+    const ogUrl = document.querySelector("meta[property*='og:url']");
+    const ogType = document.querySelector("meta[property*='og:type']");
     const ogDescription = document.querySelector(
       "meta[property*='og:description']"
     );
-    return ogDescription.content;
+    return {
+      ogTitle,
+      ogDescription,
+      ogUrl,
+      ogType,
+      ogPhoto,
+    };
   });
 
-  //get the og url of the website
-  const ogUrl = await page.evaluate(() => {
-    const ogUrl = document.querySelector("meta[property*='og:url']");
-    return ogUrl.content;
-  });
-
-  //get the og type of the website
-  const ogType = await page.evaluate(() => {
-    const ogType = document.querySelector("meta[property*='og:type']");
-    return ogType.content;
-  });
-
-  const ogDetails = {
-    ogTitle,
-    ogDescription,
-    ogUrl,
-    ogType,
-    ogPhoto,
+  return {
+    title,
+    metaDescription,
+    headings,
+    ogDetails,
+    favicon: faviconOrShortcutIcon,
+    keywords,
   };
-
-  await browser.close();
-  return { title, metaDescription, headings, ogDetails, favicon };
 };
 
 export default scrape;
