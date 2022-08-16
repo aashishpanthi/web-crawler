@@ -1,6 +1,6 @@
 import bot from "./utils/bot.js";
 
-const url = "https://www.aashishpanthi.info.np";
+const url = "https://aashishpanthi.me";
 
 bot(url)
   .then((data) => {

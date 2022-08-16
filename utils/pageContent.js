@@ -2,17 +2,21 @@ import puppeteer from "puppeteer";
 
 // scrape the title, meta description, headings and the content of the website
 const scrape = async (page, browser) => {
-  // get the title of the page
-  const title = await page.title();
-
-  // get the meta description of the page
-  const metaDescription = await page.$eval(
-    "meta[name=description]",
-    (el) => el.content
-  );
-
-  // get the keywords of the page
-  const keywords = await page.$eval("meta[name=keywords]", (el) => el.content);
+  // get the title, keywords and meta description of the page if it exists
+  const details = await page.evaluate(() => {
+    const title = document.title;
+    const keywords = document.querySelector("meta[name='keywords']")
+      ? document.querySelector("meta[name='keywords']").content
+      : "";
+    const description = document.querySelector("meta[name='description']")
+      ? document.querySelector("meta[name='description']").content
+      : "";
+    return {
+      title,
+      keywords,
+      description,
+    };
+  });
 
   // get the headings of the page
   const headings = await page.$$eval("h1, h2, h3, h4", (els) =>
@@ -20,12 +24,21 @@ const scrape = async (page, browser) => {
   );
 
   //check and get either the favicon or shortcut icon of the website
-  const favicon = await page.$eval("link[rel=icon]", (el) => el.href);
-  const shortcutIcon = await page.$eval(
-    "link[rel=shortcut icon]",
-    (el) => el.href
-  );
-  const faviconOrShortcutIcon = favicon || shortcutIcon;
+
+  // get the favicon of the website if it exists
+  const favicon = await page.evaluate(() => {
+    const favicon = document.querySelector("link[rel='icon']");
+
+    if (favicon) {
+      return favicon.href;
+    } else {
+      // get the shortcut icon of the website if it exists
+      const shortcutIcon = document.querySelector("link[rel='shortcut icon']");
+      if (shortcutIcon) {
+        return shortcutIcon.href;
+      }
+    }
+  });
 
   //get the og details of the website
   const ogDetails = await page.evaluate(() => {
@@ -37,21 +50,44 @@ const scrape = async (page, browser) => {
       "meta[property*='og:description']"
     );
     return {
-      ogTitle,
-      ogDescription,
-      ogUrl,
-      ogType,
-      ogPhoto,
+      ogTitle: ogTitle ? ogTitle.content : "",
+      ogDescription: ogDescription ? ogDescription.content : "",
+      ogUrl: ogUrl ? ogUrl.content : "",
+      ogType: ogType ? ogType.content : "",
+      ogPhoto: ogPhoto ? ogPhoto.content : "",
+    };
+  });
+
+  // get the twitter details of the website if exists
+  const twitterDetails = await page.evaluate(() => {
+    const twitterTitle = document.querySelector("meta[name='twitter:title']");
+    const twitterDescription = document.querySelector(
+      "meta[name='twitter:description']"
+    );
+    const twitterPhoto = document.querySelector("meta[name='twitter:image']");
+    const twitterCard = document.querySelector("meta[name='twitter:card']");
+    const twitterSite = document.querySelector("meta[name='twitter:site']");
+    const twitterCreator = document.querySelector(
+      "meta[name='twitter:creator']"
+    );
+    return {
+      twitterTitle: twitterTitle ? twitterTitle.content : "",
+      twitterDescription: twitterDescription ? twitterDescription.content : "",
+      twitterPhoto: twitterPhoto ? twitterPhoto.content : "",
+      twitterCard: twitterCard ? twitterCard.content : "",
+      twitterSite: twitterSite ? twitterSite.content : "",
+      twitterCreator: twitterCreator ? twitterCreator.content : "",
     };
   });
 
   return {
-    title,
-    metaDescription,
-    headings,
+    title: details.title,
+    metaDescription: details.description,
+    favicon,
+    keywords: details.keywords,
     ogDetails,
-    favicon: faviconOrShortcutIcon,
-    keywords,
+    headings,
+    twitterDetails,
   };
 };
 
