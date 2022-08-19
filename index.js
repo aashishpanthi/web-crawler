@@ -3,10 +3,10 @@ import checkRobots from "./utils/checkRobots.js";
 
 const url = "https://aashishpanthi.info.np";
 
+// Check if the url is allowed to crawl
 const canCrawl = await checkRobots(url);
 
-console.log(canCrawl);
-
+// get the page content and images from the url if allowed to crawl
 if (canCrawl) {
   bot(url)
     .then((data) => {
