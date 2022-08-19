@@ -2,6 +2,7 @@ import puppeteer from "puppeteer";
 import checkLoading from "./checkLoading.js";
 import pageContent from "./pageContent.js";
 import getImages from "./getImages.js";
+import getLinks from "./innerLinks.js";
 
 const bot = async (url) => {
   const browser = await puppeteer.launch({
@@ -14,17 +15,20 @@ const bot = async (url) => {
   const page = await browser.newPage();
   await page.goto(url);
 
-  const loadingTime = await checkLoading(page, browser);
+  const loadingTime = await checkLoading(page);
 
-  const details = await pageContent(page, browser);
+  const details = await pageContent(page);
 
-  const images = await getImages(page, browser);
+  const images = await getImages(page);
+
+  const innerLinks = await getLinks(page);
 
   await browser.close();
   return {
     loadingTime,
     details,
     images,
+    innerLinks,
   };
 };
 

@@ -1,4 +1,5 @@
 import getFavicon from "./scrapeContent/getFavicon.js";
+import getHeadings from "./scrapeContent/getHeadings.js";
 import getMetaDetails from "./scrapeContent/getMetaDetails.js";
 import getOGDetails from "./scrapeContent/getOGDetails.js";
 import getTwitterDetails from "./scrapeContent/getTwitterDetails.js";
@@ -7,10 +8,7 @@ import getTwitterDetails from "./scrapeContent/getTwitterDetails.js";
 const scrape = async (page) => {
   const details = await getMetaDetails(page);
 
-  // get the headings of the page
-  const headings = await page.$$eval("h1, h2, h3, h4, h5, h6", (els) =>
-    els.map((el) => el.textContent)
-  );
+  const headings = await getHeadings(page);
 
   const favicon = await getFavicon(page);
 
