@@ -9,6 +9,7 @@ import getSectionDetails from "./scrapeContent/getSectionDetails.js";
 import getParagraphDetails from "./scrapeContent/getParagraphDetails.js";
 import getTableDetails from "./scrapeContent/getTableDetails.js";
 import getLists from "./scrapeContent/getLists.js";
+import getStrongText from "./scrapeContent/getStrongText.js";
 
 // scrape the title, meta description, headings and the content of the website
 const scrape = async (page) => {
@@ -42,6 +43,9 @@ const scrape = async (page) => {
 
   const listContents = await getLists(page);
   console.log(listContents);
+
+  const strongText = await getStrongText(page);
+  console.log(strongText);
 
   return {
     title: details.title,
