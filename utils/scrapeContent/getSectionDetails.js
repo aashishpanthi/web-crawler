@@ -1,6 +1,6 @@
 // Get the id and class of the section tag
 
-const getSectionDetails = (page) => {
+const getSectionDetails = async (page) => {
   return page
     .evaluate(() => {
       const section = document.querySelector("section");

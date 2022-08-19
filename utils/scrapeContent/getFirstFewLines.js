@@ -1,6 +1,6 @@
 // Get the first few lines after the heading tags
 
-const getFirstFewLines = (page) => {
+const getFirstFewLines = async (page) => {
   return page
     .evaluate(() => {
       const headings = Array.from(
