@@ -3,6 +3,9 @@ import getHeadings from "./scrapeContent/getHeadings.js";
 import getMetaDetails from "./scrapeContent/getMetaDetails.js";
 import getOGDetails from "./scrapeContent/getOGDetails.js";
 import getTwitterDetails from "./scrapeContent/getTwitterDetails.js";
+import getFirstFewLines from "./scrapeContent/getFirstFewLines.js";
+import getMainTagContent from "./scrapeContent/getMainTagContent.js";
+import getSectionDetails from "./scrapeContent/getSectionDetails.js";
 
 // scrape the title, meta description, headings and the content of the website
 const scrape = async (page) => {
@@ -15,6 +18,16 @@ const scrape = async (page) => {
   const ogDetails = await getOGDetails(page);
 
   const twitterDetails = await getTwitterDetails(page);
+
+  const firstFewLines = await getFirstFewLines(page);
+
+  console.log(firstFewLines);
+
+  const mainContent = await getMainTagContent(page);
+
+  console.log(mainContent);
+
+  const sectionDetails = await getSectionDetails(page);
 
   return {
     title: details.title,
