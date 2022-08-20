@@ -3,6 +3,7 @@ import checkLoading from "./checkLoading.js";
 import pageContent from "./pageContent.js";
 import getImages from "./getImages.js";
 import getLinks from "./innerLinks.js";
+import getSubdirectory from "./getSubdirectory.js";
 
 const bot = async (url) => {
   const browser = await puppeteer.launch({
@@ -14,6 +15,8 @@ const bot = async (url) => {
   });
   const page = await browser.newPage();
   await page.goto(url);
+
+  const urlKeywords = getSubdirectory(url);
 
   const loadingTime = await checkLoading(page);
 
@@ -29,6 +32,7 @@ const bot = async (url) => {
     details,
     images,
     innerLinks,
+    urlKeywords,
   };
 };
 
