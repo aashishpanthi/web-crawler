@@ -3,8 +3,13 @@
 const getSectionDetails = async (page) => {
   return page
     .evaluate(() => {
-      const section = document.querySelector("section");
-      return section ? { id: section.id, class: section.className } : {};
+      const sections = Array.from(document.querySelectorAll("section"));
+      return sections.map((section) => {
+        return {
+          id: section.id ? section.id : "",
+          class: section.className ? section.className : "",
+        };
+      });
     })
     .then((sectionDetails) => {
       return sectionDetails;
