@@ -1,6 +1,7 @@
 import bot from "../utils/bot.js";
 import checkRobots from "../utils/checkRobots.js";
 import checkSSL from "../utils/checkSSL.js";
+import getMainContent from "./getMainContent.js";
 
 import parser from "./parser.js";
 
@@ -12,7 +13,8 @@ const scraper = async (url) => {
     if (canCrawl) {
       try {
         const data = await bot(url);
-        parser(data);
+        const refinedData = parser(data);
+        const mainData = getMainContent(refinedData);
       } catch (error) {
         console.log(error);
       } finally {
