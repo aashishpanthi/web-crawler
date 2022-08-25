@@ -12,7 +12,6 @@ const scraper = async (url) => {
     if (canCrawl) {
       try {
         const data = await bot(url);
-        console.log("before parsing");
         parser(data);
       } catch (error) {
         console.log(error);

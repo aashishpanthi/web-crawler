@@ -5,13 +5,7 @@ const getStrongText = async (page) => {
     .evaluate(() => {
       const strongTags = Array.from(document.querySelectorAll("strong"));
       return strongTags
-        .map((strongTag) => {
-          return {
-            text: strongTag.textContent,
-            id: strongTag.id,
-            class: strongTag.className,
-          };
-        })
+        .map((strongTag) => strongTag.textContent)
         .filter((strongTag) => strongTag.text !== "");
     })
     .then((strongText) => {

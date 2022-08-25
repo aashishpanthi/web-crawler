@@ -1,4 +1,5 @@
 import getRepeatingKeywords from "../parsers/mainTag.js";
+import splitWords from "../parsers/splitWords.js";
 
 const parser = (data) => {
   const { details, urlKeywords } = data;
@@ -21,53 +22,59 @@ const parser = (data) => {
   const { twitterTitle, twitterDescription } = twitterDetails;
   const { ogTitle, ogDescription } = ogDetails;
 
-  const titleKeywords = title.split(" ");
-  const metaDescriptionKeywords = metaDescription.split(" ");
-  const twitterTitleKeywords = twitterTitle.split(" ");
-  const twitterDescriptionKeywords = twitterDescription.split(" ");
-  const ogTitleKeywords = ogTitle.split(" ");
-  const ogDescriptionKeywords = ogDescription.split(" ");
-  const headingsKeywords = headings.map((heading) => heading.split(" "));
+  const titleKeywords = title ? splitWords(title) : [];
+
+  const metaDescriptionKeywords = metaDescription
+    ? splitWords(metaDescription)
+    : [];
+
+  const twitterTitleKeywords = twitterTitle ? splitWords(twitterTitle) : [];
+
+  const twitterDescriptionKeywords = twitterDescription
+    ? splitWords(twitterDescription)
+    : [];
+
+  const ogTitleKeywords = ogTitle ? splitWords(ogTitle) : [];
+
+  const ogDescriptionKeywords = ogDescription ? splitWords(ogDescription) : [];
+
+  const headingsKeywords = headings
+    .map((heading) => (heading ? splitWords(heading) : []))
+    .flat(1);
+
   const siteKeywords = keywords.split(",");
 
-  const htmlWithoutTags = mainContent.replace(/<[^>]*>/g, "");
-  const words = htmlWithoutTags?.split(" ");
+  const mainTagKeywords = mainContent ? getRepeatingKeywords(mainContent) : [];
 
-  console.log(words);
-  //   const mainTagKeywords = getRepeatingKeywords(mainContent);
-  //   if (!mainContent) {
-  //     console.log("mainContent" + mainContent);
-  //   }
+  const firstFewKeywords = firstFewLines
+    ? getRepeatingKeywords(firstFewLines)
+    : [];
 
-  if (!firstFewLines) {
-    const firstFewKeywords = firstFewLines.split(" ");
-  }
+  let allParagraphsText = "";
 
-  const paragraphKeywords = paragraphDetails.map((paragraph) => {
-    if (!paragraph.text) {
-      return getRepeatingKeywords(paragraphDetails.text);
-    } else {
-      return;
-    }
-  });
+  paragraphDetails.map((paragraph) => (allParagraphsText = paragraph + " "));
 
-  const strongTextKwywords = strongText.map((strong) => {
-    if (!strong.text) {
-      return strong.text.split(" ");
-    } else {
-      return;
-    }
-  });
+  const paragraphKeywords = allParagraphsText
+    ? getRepeatingKeywords(allParagraphsText)
+    : [];
 
-  const sectionKeywords = sectionDetails.map((section) => {
-    if (!section.id) {
-      return [section.id, section.class ? section.class.split(" ") : ""];
-    } else {
-      return;
-    }
-  });
+  const strongTextKeywords = strongText
+    .map((strong) => (strong ? splitWords(strong) : ""))
+    .flat(1);
 
-  console.log({
+  const sectionIdKeywords = sectionDetails.map((section) =>
+    section ? splitWords(section.id) : ""
+  );
+
+  const sectionClassKeywords = sectionDetails.map((section) =>
+    section ? splitWords(section.class) : ""
+  );
+
+  const sectionKeywords = [...sectionIdKeywords, ...sectionClassKeywords]
+    .filter((value) => value)
+    .flat(1);
+
+  return {
     titleKeywords,
     metaDescriptionKeywords,
     twitterTitleKeywords,
@@ -79,9 +86,9 @@ const parser = (data) => {
     mainTagKeywords,
     firstFewKeywords,
     paragraphKeywords,
-    strongTextKwywords,
+    strongTextKeywords,
     sectionKeywords,
-  });
+  };
 };
 
 export default parser;

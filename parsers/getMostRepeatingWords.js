@@ -22,8 +22,12 @@ const getMostRepeatingWords = (words) => {
   }
   // sort the wordCountArray array by the repeating time in descending order
   wordCountArray.sort((a, b) => b[1] - a[1]);
+
+  // create an array of only the words from the wordCountArray array
+  const repeatingWords = wordCountArray.map((word) => word[0]);
+
   // return the most repeating words in the wordCountArray array
-  return wordCountArray.slice(0, 50);
+  return repeatingWords.slice(0, 50);
 };
 
 export default getMostRepeatingWords;
