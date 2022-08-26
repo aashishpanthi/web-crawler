@@ -10,6 +10,8 @@
   "author": "Aashish Panthi",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^16.0.1",
+    "mongoose": "^6.5.3",
     "puppeteer": "^16.1.0",
     "robots-txt-parser": "^2.0.3"
   }
