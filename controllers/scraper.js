@@ -2,6 +2,7 @@ import bot from "../utils/bot.js";
 import checkRobots from "../utils/checkRobots.js";
 import checkSSL from "../utils/checkSSL.js";
 import getMainContent from "./getMainContent.js";
+import saveData from "./saveData.js";
 
 import parser from "./parser.js";
 
@@ -15,6 +16,8 @@ const scraper = async (url) => {
         const data = await bot(url);
         const refinedData = parser(data);
         const mainData = getMainContent(refinedData);
+
+        await saveData(data, mainData);
       } catch (error) {
         console.log(error);
       } finally {

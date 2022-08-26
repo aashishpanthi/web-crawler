@@ -4,6 +4,7 @@ const LinkSchema = new mongoose.Schema({
   url: {
     type: String,
     required: [true, "url is required"],
+    unique: true,
   },
   found: {
     type: Date,
@@ -11,14 +12,8 @@ const LinkSchema = new mongoose.Schema({
   },
   lastUpdated: {
     type: Date,
+    required: [true, "lastUpdated is required"],
     default: Date.now,
-  },
-  name: {
-    type: String,
-  },
-  backLinks: {
-    type: Number,
-    required: [true, "Backlink count is required"],
   },
 });
 
