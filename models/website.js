@@ -37,11 +37,9 @@ export const websiteSchema = new Schema(
     },
     lastUpdated: {
       type: "date",
-      default: new Date(),
     },
     backLinks: {
       type: "number",
-      default: 1,
     },
     backLinkKeywords: {
       type: "string[]",
