@@ -1,5 +1,5 @@
 import { saveLinks } from "./links.js";
-import { saveImage } from "../models/image.js";
+import { saveImage, getImages } from "../models/image.js";
 import { saveWebsiteData, getWebsiteData } from "../models/website.js";
 
 const saveData = async (data, mainData, url) => {
@@ -8,6 +8,12 @@ const saveData = async (data, mainData, url) => {
   try {
     // save the images to the redis database
     for (let i = 0; i < images.length; i++) {
+      const imageData = getImages(images[i]);
+
+      if (imageData) {
+        continue;
+      }
+
       const image = {
         imageUrl: images[i].src,
         altTag: images[i].alt,

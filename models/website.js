@@ -86,7 +86,7 @@ export const getWebsiteData = async (url) => {
 
   const sites = await repository.search().where("url").equals(url).return.all();
 
-  console.log("got website from redis", site);
+  console.log("got website from redis", sites);
 
   return sites;
 };

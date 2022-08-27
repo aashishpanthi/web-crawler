@@ -52,3 +52,21 @@ export const saveImage = async (image) => {
 
   return id;
 };
+
+export const getImages = async (url) => {
+  await connectDB();
+
+  const repository = client.fetchRepository(imageSchema);
+
+  await repository.createIndex();
+
+  const images = await repository
+    .search()
+    .where("imageUrl")
+    .equals(url)
+    .return.all();
+
+  console.log("got images from redis", images);
+
+  return images;
+};
