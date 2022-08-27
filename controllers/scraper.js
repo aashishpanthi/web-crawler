@@ -35,7 +35,7 @@ const scraper = async () => {
           const refinedData = parser(data);
           const mainData = getMainContent(refinedData);
 
-          await saveData(data, mainData);
+          await saveData(data, mainData, url);
         } catch (error) {
           console.log(error);
         } finally {

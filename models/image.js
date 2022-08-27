@@ -5,7 +5,7 @@ const client = new Client();
 const connectDB = async () => {
   if (!client.isOpen()) {
     try {
-      await client.open(process.env.REDIS_HOST);
+      await client.open(process.env.REDIS_IMAGE_URL);
       console.log("Connected to redis !");
     } catch (error) {
       console.log("failed connecting redis", error);
