@@ -4,8 +4,6 @@ import connectMongoDB from "./config/mongoDb.js";
 
 dotenv.config();
 
-const url = "https://www.britannica.com/technology/computer";
-
 connectMongoDB();
 
-scraper(url);
+scraper();

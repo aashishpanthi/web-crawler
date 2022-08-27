@@ -1,4 +1,4 @@
-import saveLinks from "./saveLinks.js";
+import { saveLinks } from "./links.js";
 
 const saveData = async (data, mainData) => {
   const { loadingTime, images, innerLinks, urlKeywords } = data;
