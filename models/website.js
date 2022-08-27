@@ -22,11 +22,11 @@ export const websiteSchema = new Schema(
       type: "string",
     },
     title: {
-      type: "string",
+      type: "text",
       textSearch: true,
     },
     description: {
-      type: "string",
+      type: "text",
       textSearch: true,
     },
     firstFewWords: {
@@ -63,16 +63,30 @@ export const websiteSchema = new Schema(
   }
 );
 
-export const saveWebsite = async (website) => {
+export const saveWebsiteData = async (website) => {
   await connectDB();
 
-  const repository = new Repository(websiteSchema, client);
+  const repository = client.fetchRepository(websiteSchema);
 
-  const website = repository.createEntity(website);
+  const site = repository.createEntity(website);
 
-  const id = await repository.save(website);
+  const id = await repository.save(site);
 
-  console.log("saved website to redis");
+  console.log("saved website to redis", id, website);
 
   return id;
+};
+
+export const getWebsiteData = async (url) => {
+  await connectDB();
+
+  const repository = client.fetchRepository(websiteSchema);
+
+  await repository.createIndex();
+
+  const sites = await repository.search().where("url").equals(url).return.all();
+
+  console.log("got website from redis", site);
+
+  return sites;
 };

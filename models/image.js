@@ -41,11 +41,12 @@ export const imageSchema = new Schema(
 export const saveImage = async (image) => {
   await connectDB();
 
-  const repository = new Repository(imageSchema, client);
+  const repository = client.fetchRepository(imageSchema);
 
-  const image = repository.createEntity(image);
+  console.log("saving image", image);
+  const img = repository.createEntity(image);
 
-  const id = await repository.save(image);
+  const id = await repository.save(img);
 
   console.log("saved image to redis");
 
