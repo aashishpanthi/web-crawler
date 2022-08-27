@@ -3,8 +3,9 @@ import checkRobots from "../utils/checkRobots.js";
 import checkSSL from "../utils/checkSSL.js";
 import getMainContent from "./getMainContent.js";
 import saveData from "./saveData.js";
-import { getLinks, updateDate } from "./links.js";
+import { getLinks, updateDate, deleteLink } from "./links.js";
 import parser from "./parser.js";
+import isImgUrl from "../utils/isImgUrl.js";
 
 let lastMonthURLs = [];
 
@@ -18,6 +19,11 @@ const scraper = async () => {
   for (let i = 0; i < lastMonthURLs.length; i++) {
     const url = lastMonthURLs[i].url;
     console.log(url);
+
+    if (isImgUrl(url)) {
+      await deleteLink(url);
+      continue;
+    }
 
     if (checkSSL(url)) {
       const canCrawl = await checkRobots(url); // Check if the url is allowed to crawl

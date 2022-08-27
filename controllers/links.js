@@ -1,4 +1,5 @@
 import Links from "../models/links.js";
+import isImgUrl from "../utils/isImgUrl.js";
 
 // fetch the new links from the database
 
@@ -33,9 +34,12 @@ export const saveLinks = async (links) => {
     (link, index) => newLinks.findIndex((l) => l.url === link.url) === index
   );
 
+  // check the real links, omit the image/pdf/video links
+  const realLinks = uniqueLinks.filter((link) => !isImgUrl(link.url));
+
   try {
     // save the links to the mongodb database if not already saved
-    await Links.insertMany(uniqueLinks);
+    await Links.insertMany(realLinks);
   } catch (error) {
     console.log(error);
   }
@@ -48,6 +52,16 @@ export const updateDate = async (_id) => {
       { lastUpdated: new Date() },
       { runValidators: true, returnNewDocument: true }
     );
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+// delete a link from the database by id
+export const deleteLink = async (_id) => {
+  try {
+    await Links.findByIdAndDelete(_id);
     return true;
   } catch (error) {
     return false;
