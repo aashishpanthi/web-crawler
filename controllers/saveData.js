@@ -1,10 +1,16 @@
 import { saveLinks } from "./links.js";
 import { saveImage, getImages } from "../models/image.js";
-import { saveWebsiteData, getWebsiteData } from "../models/website.js";
+import {
+  saveWebsiteData,
+  getWebsiteData,
+  getRepository,
+} from "../models/website.js";
 
 const saveData = async (data, mainData, url) => {
   const { loadingTime, images, innerLinks, urlKeywords, details } = data;
   const { headings, firstFewLines, title, metaDescription } = details;
+
+  const repository = await getRepository();
 
   try {
     // save the images to the redis database
@@ -27,9 +33,9 @@ const saveData = async (data, mainData, url) => {
     }
 
     // check if the url is already in the database
-    const website = await getWebsiteData(url);
+    const sites = await getWebsiteData(url);
 
-    if (website.length === 0) {
+    if (sites.length === 0) {
       console.log("url does not exist");
       // save all data abput the website in redis database
       const websiteData = {
@@ -53,23 +59,25 @@ const saveData = async (data, mainData, url) => {
       console.log("url already exists");
       // update the website data in the database
 
-      website.loadTime = loadingTime;
-      website.headings = headings
+      const websiteData = await repository.fetch(sites[0].entityId);
+
+      websiteData.url = url;
+      websiteData.urlKeywords = urlKeywords;
+      websiteData.loadTime = loadingTime;
+      websiteData.headings = headings
         .map((item) => item.replace(/[\n\t]/g, " "))
         .filter((item) => item !== "");
-      website.urlKeywords = urlKeywords;
-      website.title = title;
-      website.description = metaDescription;
-      website.firstFewWords = firstFewLines
+      websiteData.title = title;
+      websiteData.description = metaDescription;
+      websiteData.firstFewWords = firstFewLines
         .replace(/<[^>]*>/g, "")
         .replace(/[\n\t]/g, "");
-      website.mainKeywords = mainData;
-      website.url = url;
-      website.backLinks = website.backLinks;
-      website.backLinksKeywords = website.backLinksKeywords;
-      website.lastUpdated = new Date();
+      websiteData.mainKeywords = mainData;
+      websiteData.backLinks = websiteData.backLinks;
+      websiteData.backLinksKeywords = websiteData.backLinksKeywords;
+      websiteData.lastUpdated = new Date();
 
-      await saveWebsiteData(website);
+      await repository.save(websiteData);
     }
 
     // map the inner links and find if the url is already in the database
@@ -78,30 +86,31 @@ const saveData = async (data, mainData, url) => {
       const website = await getWebsiteData(link);
 
       if (website.length > 0) {
+        const websiteData = await repository.fetch(website[0].entityId);
+
+        // use the same values
+        websiteData.loadTime = websiteData.loadTime;
+        websiteData.headings = websiteData.headings;
+        websiteData.title = websiteData.title;
+        websiteData.description = websiteData.description;
+        websiteData.firstFewWords = websiteData.firstFewWords;
+        websiteData.mainKeywords = websiteData.mainKeywords;
+        websiteData.lastUpdated = websiteData.lastUpdated;
+        websiteData.url = websiteData.url;
+        websiteData.urlKeywords = websiteData.urlKeywords;
+
         // update the website data in the database
-        website.backLinks += 1;
-        const backLinksKeywords = website.backLinksKeywords
-          ? website.backLinksKeywords
+        websiteData.backLinks = websiteData.backLinks + 1;
+
+        const backLinksKeywords = websiteData.backLinksKeywords
+          ? websiteData.backLinksKeywords
           : [];
 
-        website.backLinksKeywords = backLinksKeywords.concat(
-          [innerLinks[i].text, innerLinks[i].title]
-            .map((item) => item.toLowerCase())
-            .map((item) => item.replace(/[\n\t]/g, " "))
-            .filter((item) => item !== "")
+        websiteData.backLinksKeywords = backLinksKeywords.push(
+          innerLinks[i].text
         );
 
-        website.loadTime = website.loadTime;
-        website.headings = website.headings;
-        website.urlKeywords = website.urlKeywords;
-        website.title = website.title;
-        website.description = website.description;
-        website.firstFewWords = website.firstFewWords;
-        website.mainKeywords = website.mainKeywords;
-        website.url = website.url;
-        website.lastUpdated = website.lastUpdated;
-
-        await saveWebsiteData(website);
+        await repository.save(websiteData);
 
         //remove the link from the array of links to be saved
         innerLinks.splice(i, 1);

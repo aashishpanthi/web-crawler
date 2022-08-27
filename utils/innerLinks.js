@@ -6,7 +6,6 @@ const getLinks = async (page) => {
       return {
         href: link.href,
         text: link.textContent,
-        title: link.title,
       };
     });
   });

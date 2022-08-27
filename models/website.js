@@ -62,15 +62,9 @@ export const websiteSchema = new Schema(
 );
 
 export const saveWebsiteData = async (website) => {
-  await connectDB();
-
-  const repository = client.fetchRepository(websiteSchema);
-
+  const repository = await getRepository();
   const site = repository.createEntity(website);
-
   const id = await repository.save(site);
-
-  console.log("saved website to redis", id, website);
 
   return id;
 };
@@ -78,7 +72,7 @@ export const saveWebsiteData = async (website) => {
 export const getWebsiteData = async (url) => {
   await connectDB();
 
-  const repository = client.fetchRepository(websiteSchema);
+  const repository = await client.fetchRepository(websiteSchema);
 
   await repository.createIndex();
 
@@ -87,4 +81,9 @@ export const getWebsiteData = async (url) => {
   console.log("got website from redis", sites);
 
   return sites;
+};
+
+export const getRepository = async () => {
+  await connectDB();
+  return client.fetchRepository(websiteSchema);
 };

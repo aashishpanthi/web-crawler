@@ -11,7 +11,7 @@ const bot = async (url) => {
       width: 1920,
       height: 1080,
     },
-    headless: false,
+    args: ["--no-sandbox", "--headless"],
   });
   const page = await browser.newPage();
   await page.goto(url);
