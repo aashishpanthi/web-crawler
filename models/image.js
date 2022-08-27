@@ -23,12 +23,14 @@ export const imageSchema = new Schema(
     },
     siteTitle: {
       type: "string",
+      textSearch: true,
     },
     siteURL: {
       type: "string",
     },
     altTag: {
       type: "string",
+      textSearch: true,
     },
   },
   {
@@ -39,7 +41,7 @@ export const imageSchema = new Schema(
 export const saveImage = async (image) => {
   await connectDB();
 
-  const repository = new Repository(client, imageSchema);
+  const repository = new Repository(imageSchema, client);
 
   const image = repository.createEntity(image);
 
