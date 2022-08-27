@@ -13,6 +13,7 @@
     "dotenv": "^16.0.1",
     "mongoose": "^6.5.3",
     "puppeteer": "^16.1.0",
+    "redis-om": "^0.3.6",
     "robots-txt-parser": "^2.0.3"
   }
 }
