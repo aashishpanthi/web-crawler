@@ -22,27 +22,37 @@ export const getLinks = async () => {
 
 export const saveLinks = async (links) => {
   const newLinks = links.map((link) => {
-    const url = new URL(link["href"]);
-    const baseUrl = `${url.protocol}//${url.hostname}${url.pathname}`;
-    return {
-      url: baseUrl,
-      lastUpdated: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-    };
+    try {
+      const url = new URL(link.href);
+      const baseUrl = `${url.protocol}//${url.hostname}${url.pathname}`;
+      return {
+        url: baseUrl,
+        lastUpdated: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+      };
+    } catch (error) {
+      return;
+    }
   });
 
-  // remove the duplicates from the links arrays
-  const uniqueLinks = newLinks.filter(
-    (link, index) => newLinks.findIndex((l) => l.url === link.url) === index
-  );
+  console.log(newLinks);
+
+  const filteredLinks = newLinks
+    .filter((link) => link !== undefined)
+    .filter((link) => link != "javascript://void(0)");
 
   // check the real links, omit the image/pdf/video links
-  const realLinks = uniqueLinks.filter((link) => !isImgUrl(link.url));
+  const realLinks = filteredLinks.filter((link) => !isImgUrl(link.url));
 
-  try {
-    // save the links to the mongodb database if not already saved
-    await Links.insertMany(realLinks);
-  } catch (error) {
-    console.log(error);
+  console.log(realLinks);
+
+  // save the links to the mongodb database if not already saved
+  for (let i = 0; i < realLinks.length; i++) {
+    try {
+      const newLink = new Links(realLinks[i]);
+      await newLink.save();
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
 
