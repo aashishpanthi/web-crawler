@@ -12,7 +12,7 @@ export const getLinks = async () => {
         $lt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
         // $lt: new Date(new Date().setMonth(new Date().getMonth())),
       },
-    });
+    }).limit(1);
 
     return links;
   } catch (error) {
