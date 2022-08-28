@@ -46,6 +46,8 @@ const scraper = async () => {
       console.log("Not allowed to crawl");
     }
 
+    console.log("id to be updated is: " + lastMonthURLs[i]._id);
+
     // update the last updated date of the url
     await updateDate(lastMonthURLs[i]._id);
 
@@ -54,7 +56,7 @@ const scraper = async () => {
   }
 
   // recursion
-  // scraper();
+  scraper();
 };
 
 export default scraper;

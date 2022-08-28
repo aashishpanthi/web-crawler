@@ -58,7 +58,7 @@ export const saveLinks = async (links) => {
 
 export const updateDate = async (_id) => {
   try {
-    await Track.findOneAndUpdate(
+    await Links.findOneAndUpdate(
       { _id },
       { lastUpdated: new Date() },
       { runValidators: true, returnNewDocument: true }
