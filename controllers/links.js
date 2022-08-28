@@ -9,8 +9,8 @@ export const getLinks = async () => {
   try {
     const links = await Links.find({
       lastUpdated: {
-        // $lt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-        $lt: new Date(new Date().setMonth(new Date().getMonth())),
+        $lt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+        // $lt: new Date(new Date().setMonth(new Date().getMonth())),
       },
     });
 
