@@ -80,13 +80,15 @@ const saveData = async (data, mainData, url) => {
       await repository.save(websiteData);
     }
 
+    console.log("Meow");
     // map the inner links and find if the url is already in the database
     for (let i = 0; i < innerLinks.length; i++) {
       const link = innerLinks[i].href;
-      const website = await getWebsiteData(link);
+      console.log("link", link);
+      const sites = await getWebsiteData(link);
 
-      if (website.length > 0) {
-        const websiteData = await repository.fetch(website[0].entityId);
+      if (sites.length > 0) {
+        const websiteData = await repository.fetch(sites[0].entityId);
 
         // use the same values
         websiteData.loadTime = websiteData.loadTime;

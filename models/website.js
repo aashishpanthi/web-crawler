@@ -69,18 +69,29 @@ export const saveWebsiteData = async (website) => {
   return id;
 };
 
-export const getWebsiteData = async (url) => {
-  await connectDB();
-
-  const repository = await client.fetchRepository(websiteSchema);
+export const getWebsiteData = async (link) => {
+  const repository = await getRepository();
 
   await repository.createIndex();
 
-  const sites = await repository.search().where("url").equals(url).return.all();
+  try {
+    const url = new URL(link);
+    const baseUrl = `${url.protocol}//${url.hostname}${url.pathname}`;
 
-  console.log("got website from redis", sites);
+    console.log("url to search", baseUrl);
 
-  return sites;
+    const sites = await repository
+      .search()
+      .where("url")
+      .eq(baseUrl)
+      .return.all();
+    console.log("got website from redis", sites);
+    return sites;
+  } catch (error) {
+    console.log(error);
+    console.log("failed to get", link);
+    return [];
+  }
 };
 
 export const getRepository = async () => {
