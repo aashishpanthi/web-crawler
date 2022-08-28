@@ -26,10 +26,11 @@ export const saveLinks = async (links) => {
     const baseUrl = `${url.protocol}//${url.hostname}${url.pathname}`;
     return {
       url: baseUrl,
+      lastUpdated: new Date(new Date().setMonth(new Date().getMonth() - 1)),
     };
   });
 
-  // renove the duplicates from the links arrays
+  // remove the duplicates from the links arrays
   const uniqueLinks = newLinks.filter(
     (link, index) => newLinks.findIndex((l) => l.url === link.url) === index
   );
