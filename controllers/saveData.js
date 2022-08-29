@@ -8,7 +8,16 @@ import {
 
 const saveData = async (data, mainData, url) => {
   const { loadingTime, images, innerLinks, urlKeywords, details } = data;
-  const { headings, firstFewLines, title, metaDescription } = details;
+  const {
+    headings,
+    firstFewLines,
+    title,
+    metaDescription,
+    favicon,
+    ogDetails,
+  } = details;
+
+  const { ogPhoto: ogImage } = ogDetails;
 
   const repository = await getRepository();
 
@@ -53,6 +62,8 @@ const saveData = async (data, mainData, url) => {
         mainKeywords: mainData,
         lastUpdated: new Date(),
         backLinks: 1,
+        favicon: favicon,
+        ogImage: ogImage,
       };
       await saveWebsiteData(websiteData);
     } else {
@@ -76,6 +87,8 @@ const saveData = async (data, mainData, url) => {
       websiteData.backLinks = websiteData.backLinks;
       websiteData.backLinksKeywords = websiteData.backLinksKeywords;
       websiteData.lastUpdated = new Date();
+      websiteData.favicon = favicon;
+      websiteData.ogImage = ogImage;
 
       await repository.save(websiteData);
     }
@@ -100,6 +113,8 @@ const saveData = async (data, mainData, url) => {
         websiteData.lastUpdated = websiteData.lastUpdated;
         websiteData.url = websiteData.url;
         websiteData.urlKeywords = websiteData.urlKeywords;
+        websiteData.favicon = websiteData.favicon;
+        websiteData.ogImage = websiteData.ogImage;
 
         // update the website data in the database
         websiteData.backLinks = websiteData.backLinks + 1;

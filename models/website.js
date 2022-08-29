@@ -55,6 +55,12 @@ export const websiteSchema = new Schema(
       type: "string[]",
       textSearch: true,
     },
+    favicon: {
+      type: "string",
+    },
+    ogImage: {
+      type: "string",
+    },
   },
   {
     dataStructure: "JSON",
