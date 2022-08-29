@@ -22,14 +22,14 @@ export const imageSchema = new Schema(
       type: "string",
     },
     siteTitle: {
-      type: "string",
+      type: "text",
       textSearch: true,
     },
     siteURL: {
       type: "string",
     },
     altTag: {
-      type: "string",
+      type: "text",
       textSearch: true,
     },
   },
